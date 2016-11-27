@@ -85,8 +85,7 @@ def run():
 
 
 def print_results(list_name, list):
-    print("--- %s seconds ---" % round(time.time() - start_time, 2))
-    print()
+    print("--- %s seconds ---\n" % round(time.time() - start_time, 2))
     print("MIN: %f (set size: %d)" % (
         min(list),
         set_size_list[list.index(min(list))],
@@ -96,8 +95,6 @@ def print_results(list_name, list):
         set_size_list[list.index(max(list))]
     ))
     for i in range(len(neighbors_score_list)):
-        # print("Tree: %d; %f" % (set_size_list[i], tree_score_list[i]))
-        # print("Forest: %d; %f" % (set_size_list[i], forest_score_list[i]))
         print("%s: %d; %f" % (list_name, set_size_list[i], list[i]))
 
 
