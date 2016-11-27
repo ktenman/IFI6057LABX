@@ -88,7 +88,7 @@ def print_results():
     for i in range(len(tree_score_list)):
         print("Tree: %d; %f" % (set_size_list[i], tree_score_list[i]))
         print("Forest: %d; %f" % (set_size_list[i], forest_score_list[i]))
-        print("Forest: %d; %f" % (set_size_list[i], neighbors_score_list[i]))
+        print("Neighbors: %d; %f" % (set_size_list[i], neighbors_score_list[i]))
     print("--- %s seconds ---" % round(time.time() - start_time, 2))
 
 
