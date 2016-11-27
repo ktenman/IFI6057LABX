@@ -1,10 +1,17 @@
 from sklearn import tree
-import scipy
 import random
 import csv
+import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt2
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.neighbors import KNeighborsClassifier
+import time
+start_time = time.time()
 
-divided_times = 891
-score_list = []
+divided_times = 10
+tree_score_list = []
+set_size_list = []
+forest_score_list = []
 
 
 def get_passengers(file_name):
@@ -14,7 +21,7 @@ def get_passengers(file_name):
         for row in spamreader:
             passengers.append(row)
     del passengers[0]
-    random.shuffle(passengers)
+    # random.shuffle(passengers)
     return passengers
 
 
@@ -28,15 +35,15 @@ def analize_data(passengers, limit):
         'S': 3,
         'C': 4
     }
-    till = int(len(passengers) * limit)
-    for i in range(till):
+    set_size = int(len(passengers) * limit)
+    for i in range(set_size):
         element = passengers[i]
         abi = [
             float(element[2]),
             dict.get(element[4]),
         ]
         try:
-            # abi.append(float(element[5]))
+            abi.append(float(element[5]))
             abi.append(int(element[6]))
             abi.append(float(element[7]))
             abi.append(float(0 if dict.get(element[11]) is None else dict.get(element[11]))),
@@ -44,24 +51,64 @@ def analize_data(passengers, limit):
             features.append(abi)
         except ValueError:
             pass
-    return features, labels
+    return features, labels, set_size
 
 
 def run():
     passengers = get_passengers("train.csv")
     for i in range(divided_times):
-        features, labels = analize_data(passengers, (1 / divided_times + (1 / divided_times) * i))
-        clf = tree.DecisionTreeClassifier()
-        clf = clf.fit(features, labels)
-        features, labels = analize_data(get_passengers("IFI6057_hw2016_test.csv"), 1)
-        score = clf.score(features, labels)
-        score_list.append(score)
+        train_features, train_labels, set_size = analize_data(passengers, (1 / divided_times + (1 / divided_times) * i))
+
+        # clf = tree.DecisionTreeClassifier()
+        # clf = clf.fit(train_features, train_labels)
+
+        forest = RandomForestClassifier(n_estimators=10)
+        forest = forest.fit(train_features, train_labels)
+
+        # naabrid = KNeighborsClassifier(3)
+        # naabrid = naabrid.fit(train_features, train_labels)
+
+        test_features, test_labels, temp = analize_data(get_passengers("IFI6057_hw2016_test.csv"), 1)
+
+        # tree_score = clf.score(test_features, test_labels)
+        forest_score = forest.score(test_features, test_labels)
+
+        # naabrid_score = naabrid.score(test_features, test_labels)
+
+        # tree_score_list.append(tree_score * 100)
+        forest_score_list.append(forest_score * 100)
+
+        # print(naabrid_score)
+
+        set_size_list.append(set_size)
 
 
 def print_results():
-    for i in range(len(score_list)):
-        print("%d, %f" % (i + 1), (score_list[i]))
+    for i in range(len(tree_score_list)):
+        # print("Tree: %d; %f" % (set_size_list[i], tree_score_list[i]))
+        print("Forest: %d; %f" % (set_size_list[i], forest_score_list[i]))
+    print("--- %s seconds ---" % round(time.time() - start_time, 2))
+
+
+def show_results():
+    # plt.xlabel('Test data set size')
+    # plt.ylabel('Accuracy')
+    # plt.title('Decision Tree Classifier')
+    # plt.grid(True)
+    # plt.plot(set_size_list, tree_score_list, color='b',
+    #          linewidth=1.0)
+    # # plt.axis([0,50,0,100])
+    # plt.show()
+    #
+    plt2.xlabel('Test data set size')
+    plt2.ylabel('Accuracy')
+    plt2.title('Forest Classifier')
+    plt2.grid(True)
+    plt2.plot(set_size_list, forest_score_list, color='g',
+              linewidth=1.0)
+    plt2.show()
 
 
 run()
 print_results()
+show_results()
