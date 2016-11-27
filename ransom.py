@@ -21,7 +21,6 @@ def get_passengers(file_name):
         for row in spamreader:
             passengers.append(row)
     del passengers[0]
-    # random.shuffle(passengers)
     return passengers
 
 
@@ -37,18 +36,18 @@ def analize_data(passengers, limit):
     }
     set_size = int(len(passengers) * limit)
     for i in range(set_size):
-        element = passengers[i]
-        abi = [
-            float(element[2]),
-            dict.get(element[4]),
+        passenger = passengers[i]
+        temp = [
+            float(passenger[2]),
+            dict.get(passenger[4]),
         ]
         try:
-            abi.append(float(element[5]))
-            abi.append(int(element[6]))
-            abi.append(float(element[7]))
-            abi.append(float(0 if dict.get(element[11]) is None else dict.get(element[11]))),
-            labels.append(element[1])
-            features.append(abi)
+            temp.append(float(passenger[5]))
+            temp.append(int(passenger[6]))
+            temp.append(float(passenger[7]))
+            temp.append(float(0 if dict.get(passenger[11]) is None else dict.get(passenger[11]))),
+            labels.append(passenger[1])
+            features.append(temp)
         except ValueError:
             pass
     return features, labels, set_size
